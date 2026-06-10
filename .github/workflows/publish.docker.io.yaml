@@ -21,6 +21,11 @@ on:
         required: false
         default: 'runtime'
         type: string
+      dockerfile_path:  # 添加这个参数
+        description: 'Path to Dockerfile'
+        required: false
+        default: './Dockerfile'
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -96,6 +101,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ${{ inputs.dockerfile_path }}  # 使用参数
           platforms: ${{ inputs.target_platforms }}
           push: ${{ !inputs.debug_mode }} # 调试模式下不推送
           tags: ${{ steps.meta.outputs.tags }}
