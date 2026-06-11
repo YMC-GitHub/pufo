@@ -26,7 +26,17 @@ on:
         required: false
         default: './Dockerfile'
         type: string
-
+    inputs:
+      custom_tags:
+        description: 'Custom Docker tags (comma-separated)'
+        required: false
+        default: ''
+        type: string
+      tag_version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: false
+        default: ''
+        type: string
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -96,6 +106,7 @@ jobs:
             type=ref,event=tag
             type=raw,value=latest,enable=${{ steps.flags.outputs.is_main == 'true' }}
             type=raw,value=debug-${{ github.sha }},enable=${{ steps.flags.outputs.debug_mode == 'true' }}
+            type=raw,value=${{ inputs.custom_version }},enable=${{ inputs.custom_version != '' }}
 
       - name: Build Docker image
         uses: docker/build-push-action@v5
